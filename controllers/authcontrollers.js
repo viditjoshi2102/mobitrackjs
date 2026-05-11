@@ -6,7 +6,7 @@ const generateToken = (id) => {
 };
 
 // Register
-exports.register = async (req, res) => {
+exports.register = async (req, res, next) => {
   try {
     const { name, email, password, shopName, phone } = req.body;
 
@@ -39,12 +39,12 @@ exports.register = async (req, res) => {
     });
   } catch (error) {
     console.error('Register error:', error);
-    res.status(500).json({ message: error.message });
+    next(error);
   }
 };
 
 // Login
-exports.login = async (req, res) => {
+exports.login = async (req, res, next) => {
   try {
     const { email, password } = req.body;
 
@@ -69,6 +69,6 @@ exports.login = async (req, res) => {
     });
   } catch (error) {
     console.error('Login error:', error);
-    res.status(500).json({ message: error.message });
+    next(error);
   }
 };
