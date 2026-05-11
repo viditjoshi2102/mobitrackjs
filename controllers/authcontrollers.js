@@ -8,7 +8,7 @@ const generateToken = (id) => {
 // Register - WITH next parameter
 exports.register = async (req, res, next) => {
   try {
-    const { name, email, password, shopName, phone } = req.body;
+    const { name, email, password, shopName, phone } = req.body || {};
 
     // Validation
     if (!name || !email || !password) {
