@@ -32,7 +32,7 @@ exports.addDevice = async (req, res) => {
     const device = new Device({
       ...deviceData,
       images: imageUrls,
-      shopkeeperId: req.user.id,
+      shopkeeperId: req.user._id,
       purchasedDate: deviceData.purchasedDate || Date.now(),
     });
 
@@ -47,7 +47,7 @@ exports.addDevice = async (req, res) => {
 // Get all devices
 exports.getAllDevices = async (req, res) => {
   try {
-    const devices = await Device.find({ shopkeeperId: req.user.id })
+    const devices = await Device.find({ shopkeeperId: req.user._id })
       .sort({ createdAt: -1 });
     res.json({ success: true, data: devices });
   } catch (error) {
@@ -65,7 +65,7 @@ exports.searchDevices = async (req, res) => {
     }
 
     const devices = await Device.find({
-      shopkeeperId: req.user.id,
+      shopkeeperId: req.user._id,
       $or: [
         { deviceName: { $regex: query, $options: 'i' } },
         { brand: { $regex: query, $options: 'i' } },
@@ -87,7 +87,7 @@ exports.getDeviceById = async (req, res) => {
   try {
     const device = await Device.findOne({
       _id: req.params.id,
-      shopkeeperId: req.user.id,
+      shopkeeperId: req.user._id,
     });
     
     if (!device) {
@@ -104,7 +104,7 @@ exports.getDeviceById = async (req, res) => {
 exports.updateDevice = async (req, res) => {
   try {
     const device = await Device.findOneAndUpdate(
-      { _id: req.params.id, shopkeeperId: req.user.id },
+      { _id: req.params.id, shopkeeperId: req.user._id },
       req.body,
       { new: true, runValidators: true }
     );
@@ -125,7 +125,7 @@ exports.markAsSold = async (req, res) => {
     const { sellingPrice, soldDate } = req.body;
     
     const device = await Device.findOneAndUpdate(
-      { _id: req.params.id, shopkeeperId: req.user.id },
+      { _id: req.params.id, shopkeeperId: req.user._id },
       {
         isSold: true,
         sellingPrice: sellingPrice,
@@ -149,7 +149,7 @@ exports.deleteDevice = async (req, res) => {
   try {
     const device = await Device.findOneAndDelete({
       _id: req.params.id,
-      shopkeeperId: req.user.id,
+      shopkeeperId: req.user._id,
     });
     
     if (!device) {
