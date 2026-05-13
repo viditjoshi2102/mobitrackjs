@@ -9,7 +9,7 @@ const path = require('path');
 const dns = require('dns');
 dns.setServers(['8.8.8.8', '1.1.1.1']);
 
-// rest of your code...
+// this is 13/03 code
 
 dotenv.config();
 connectDB();
