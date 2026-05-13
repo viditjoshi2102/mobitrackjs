@@ -1,5 +1,27 @@
 const Device = require('../models/Device');
 const cloudinary = require('../config/cloudinary');
+const { Readable } = require('stream');
+
+const uploadBufferToCloudinary = (file, folder) =>
+  new Promise((resolve, reject) => {
+    const uploadStream = cloudinary.uploader.upload_stream(
+      {
+        folder,
+        resource_type: 'image',
+        public_id: `${Date.now()}-${file.originalname.replace(/\.[^/.]+$/, '')}`,
+      },
+      (error, result) => {
+        if (error) {
+          reject(error);
+          return;
+        }
+
+        resolve(result);
+      }
+    );
+
+    Readable.from(file.buffer).pipe(uploadStream);
+  });
 
 // Add new device
 exports.addDevice = async (req, res) => {
@@ -14,13 +36,9 @@ exports.addDevice = async (req, res) => {
 
     // Upload images to Cloudinary
     const imageUrls = [];
-    console.log('req.files:', req.files); // Debug logging
     if (req.files && req.files.length > 0) {
-      console.log('Uploading', req.files.length, 'images'); // Debug logging
       for (const file of req.files) {
-        const result = await cloudinary.uploader.upload(file.buffer, {
-          folder: 'old-mobile-devices',
-        });
+        const result = await uploadBufferToCloudinary(file, 'old-mobile-devices');
         imageUrls.push({
           url: result.secure_url,
           publicId: result.public_id,
