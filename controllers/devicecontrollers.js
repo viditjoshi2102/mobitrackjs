@@ -15,7 +15,9 @@ exports.addDevice = async (req, res) => {
 
     // Upload images to Cloudinary
     const imageUrls = [];
+    console.log('req.files:', req.files); // Debug logging
     if (req.files && req.files.length > 0) {
+      console.log('Uploading', req.files.length, 'images'); // Debug logging
       for (const file of req.files) {
         const result = await cloudinary.uploader.upload(file.path, {
           folder: 'old-mobile-devices',
