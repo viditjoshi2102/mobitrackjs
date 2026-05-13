@@ -8,10 +8,14 @@ const generateToken = (id) => {
 // Register - WITH next parameter
 exports.register = async (req, res, next) => {
   try {
+    console.log('[AUTH REGISTER] Request received at:', new Date().toISOString());
+    console.log('[AUTH REGISTER] Body:', req.body);
+    
     const { name, email, password, shopName, phone } = req.body || {};
 
     // Validation
     if (!name || !email || !password) {
+      console.log('[AUTH REGISTER] Validation failed - missing fields');
       return res.status(400).json({ 
         success: false,
         message: 'Name, email, and password are required' 
@@ -21,6 +25,7 @@ exports.register = async (req, res, next) => {
     // Check existing user
     const userExists = await User.findOne({ email });
     if (userExists) {
+      console.log('[AUTH REGISTER] User already exists:', email);
       return res.status(400).json({ 
         success: false,
         message: 'User already exists' 
@@ -28,6 +33,7 @@ exports.register = async (req, res, next) => {
     }
 
     // Create user
+    console.log('[AUTH REGISTER] Creating new user:', email);
     const user = await User.create({
       name,
       email,
@@ -36,6 +42,7 @@ exports.register = async (req, res, next) => {
       phone: phone || '',
     });
 
+    console.log('[AUTH REGISTER] User created successfully:', user._id);
     // Send response
     res.status(201).json({
       success: true,
@@ -49,7 +56,7 @@ exports.register = async (req, res, next) => {
       },
     });
   } catch (error) {
-    console.error('Registration error:', error);
+    console.error('[AUTH REGISTER] Error:', error.message);
     next(error); // ✅ next is defined because function has (req, res, next)
   }
 };
