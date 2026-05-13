@@ -4,7 +4,6 @@ const dotenv = require('dotenv');
 const connectDB = require('./config/database');
 const authRoutes = require('./routes/authRoutes');
 const deviceRoutes = require('./routes/deviceRoutes');
-const path = require('path');
 
 const dns = require('dns');
 dns.setServers(['8.8.8.8', '1.1.1.1']);
@@ -20,7 +19,6 @@ const app = express();
 app.use(cors());
 app.use(express.json());
 app.use(express.urlencoded({ extended: true }));
-app.use('/uploads', express.static(path.join(__dirname, '../uploads')));
 
 // Routes
 app.use('/api/auth', authRoutes);

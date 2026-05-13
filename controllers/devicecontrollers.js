@@ -1,6 +1,5 @@
 const Device = require('../models/Device');
 const cloudinary = require('../config/cloudinary');
-const fs = require('fs');
 
 // Add new device
 exports.addDevice = async (req, res) => {
@@ -19,15 +18,13 @@ exports.addDevice = async (req, res) => {
     if (req.files && req.files.length > 0) {
       console.log('Uploading', req.files.length, 'images'); // Debug logging
       for (const file of req.files) {
-        const result = await cloudinary.uploader.upload(file.path, {
+        const result = await cloudinary.uploader.upload(file.buffer, {
           folder: 'old-mobile-devices',
         });
         imageUrls.push({
           url: result.secure_url,
           publicId: result.public_id,
         });
-        // Remove local file
-        fs.unlinkSync(file.path);
       }
     }
 
